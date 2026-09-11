@@ -636,10 +636,7 @@ document.addEventListener("click", (e) => {
 } else if (action === "submitAuth") {
   handleAuth(el.dataset.mode);
 }
-    } else if (action === "submitAuth") {
-      handleAuth(el.dataset.mode);
-    }
-    return;
+return;
   }
   if (e.target.id === "cartBtn" || e.target.closest("#cartBtn")) {
     state.cartOpen = !state.cartOpen;
