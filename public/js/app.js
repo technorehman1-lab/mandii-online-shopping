@@ -534,7 +534,7 @@ function renderAuthModal() {
   const mode = state.authModal;
   if (!mode) return "";
   return `
-    <div class="modal-backdrop" data-action="closeAuth">
+  <div class="modal-backdrop" data-action="closeAuth" onclick="if(event.target === this) { state.authModal = null; state.authError = ''; render(); }">
       <div class="modal">
         <button class="close-x" data-action="closeAuth">${ICON.x}</button>
         <h2 class="serif">${mode === "login" ? "Log in" : "Create your account"}</h2>
@@ -607,9 +607,12 @@ document.addEventListener("click", (e) => {
       state.cartOpen = false;
       render();
     } else if (action === "closeAuth") {
-      state.authModal = null;
-      state.authError = "";
-      render();
+  if (el.classList.contains("modal-backdrop") && e.target === el) {
+    state.authModal = null;
+    state.authError = "";
+    render();
+  }
+}
     } else if (action === "switchAuth") {
       state.authModal = el.dataset.value;
       state.authError = "";
