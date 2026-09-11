@@ -25,16 +25,26 @@ const PAY_METHODS = [
 ];
 const WALLET_NUMBER = "0328-6815131";
 
+function readStoredJson(key, fallback) {
+  try {
+    const value = localStorage.getItem(key);
+    return value ? JSON.parse(value) : fallback;
+  } catch {
+    localStorage.removeItem(key);
+    return fallback;
+  }
+}
+
 const state = {
   view: "home",
   products: [],
   category: "All",
   query: "",
   selectedProduct: null,
-  cart: JSON.parse(localStorage.getItem("mandi_cart") || "[]"),
+  cart: readStoredJson("mandi_cart", []),
   cartOpen: false,
   token: localStorage.getItem("mandi_token") || null,
-  user: JSON.parse(localStorage.getItem("mandi_user") || "null"),
+  user: readStoredJson("mandi_user", null),
   authModal: null, // 'login' | 'register' | null
   authError: "",
   order: null,
@@ -533,18 +543,26 @@ function renderCartDrawer() {
 function renderAuthModal() {
   const mode = state.authModal;
   if (!mode) return "";
+
   return `
-  <div class="modal-backdrop" data-action="closeAuth" onclick="if(event.target === this) { state.authModal = null; state.authError = ''; render(); }">
+    <div class="modal-backdrop">
       <div class="modal">
         <button class="close-x" data-action="closeAuth">${ICON.x}</button>
+
         <h2 class="serif">${mode === "login" ? "Log in" : "Create your account"}</h2>
+
         ${state.authError ? `<div class="banner-msg banner-error">${state.authError}</div>` : ""}
+
         <div class="form-col">
           ${mode === "register" ? `<input id="authName" placeholder="Full name" class="input-plain" />` : ""}
           <input id="authEmail" type="email" placeholder="Email" class="input-plain" />
           <input id="authPassword" type="password" placeholder="Password" class="input-plain" />
-          <button class="btn btn-accent" data-action="submitAuth" data-mode="${mode}">${mode === "login" ? "Log in" : "Create account"}</button>
+
+          <button class="btn btn-accent" data-action="submitAuth" data-mode="${mode}">
+            ${mode === "login" ? "Log in" : "Create account"}
+          </button>
         </div>
+
         <div class="modal-switch">
           ${
             mode === "login"
@@ -579,6 +597,7 @@ document.addEventListener("click", (e) => {
   if (el) {
     const action = el.dataset.action;
     const id = el.dataset.id ? Number(el.dataset.id) : null;
+
     if (action === "setCategory") {
       state.category = el.dataset.value;
       render();
@@ -607,22 +626,21 @@ document.addEventListener("click", (e) => {
       state.cartOpen = false;
       render();
     } else if (action === "closeAuth") {
-  if (el.classList.contains("modal-backdrop") && e.target === el) {
-    state.authModal = null;
-    state.authError = "";
-    render();
-  }
-}
-    } else if (action === "switchAuth") {
-      state.authModal = el.dataset.value;
+      state.authModal = null;
       state.authError = "";
       render();
+} else if (action === "switchAuth") {
+  state.authModal = el.dataset.value;
+  state.authError = "";
+  render();
+} else if (action === "submitAuth") {
+  handleAuth(el.dataset.mode);
+}
     } else if (action === "submitAuth") {
       handleAuth(el.dataset.mode);
     }
     return;
   }
-
   if (e.target.id === "cartBtn" || e.target.closest("#cartBtn")) {
     state.cartOpen = !state.cartOpen;
     render();
