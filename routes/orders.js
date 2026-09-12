@@ -4,7 +4,7 @@ const { authRequired, adminRequired } = require("../middleware/auth");
 
 const router = express.Router();
 
-const VALID_METHODS = ["card", "jazzcash", "easypaisa", "sadapay"];
+const VALID_METHODS = ["card", "jazzcash", "easypaisa", "sadapay", "cod"];
 const VALID_STATUSES = ["pending_payment", "paid", "processing", "shipped", "delivered", "cancelled"];
 
 function generateOrderCode() {

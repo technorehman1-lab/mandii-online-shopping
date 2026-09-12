@@ -230,7 +230,9 @@ async function placeOrder() {
         items: state.cart,
         shipping: state.shipping,
         payment_method: state.paymentMethod,
-        payment_reference: state.paymentMethod === "card" ? null : state.paymentRef.trim(),
+        payment_reference: ["card", "cod"].includes(state.paymentMethod)
+  ? null
+  : state.paymentRef.trim()
       },
     });
 
@@ -371,7 +373,7 @@ function renderCheckout() {
   const err = state.formErrors;
   const s = state.shipping;
   const c = state.card;
-  const isWallet = state.paymentMethod !== "card";
+const isWallet = state.paymentMethod !== "card" && state.paymentMethod !== "cod";
 
   return `
     <div class="wrap fade-in" style="padding-top:16px;padding-bottom:60px">
