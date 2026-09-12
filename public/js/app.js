@@ -22,6 +22,7 @@ const PAY_METHODS = [
   { id: "jazzcash", label: "JazzCash", note: "Manual transfer" },
   { id: "easypaisa", label: "Easypaisa", note: "Manual transfer" },
   { id: "sadapay", label: "SadaPay", note: "Manual transfer" },
+  { id: "cod", label: "Cash on Delivery", note: "Pay when it arrives" },
 ];
 const WALLET_NUMBER = "0328-6815131";
 
@@ -52,6 +53,11 @@ const state = {
   shipping: { name: "", phone: "", address: "", city: "" },
   paymentMethod: "card",
   paymentRef: "",
+  wallet: {
+  balance: 0,
+  methods: [],
+  transactions: [],
+},
   card: { name: "", number: "", expiry: "", cvv: "" },
   formErrors: {},
   isProcessing: false,
@@ -84,7 +90,25 @@ async function api(path, { method = "GET", body, auth = false } = {}) {
   if (!res.ok) throw new Error(data.error || "Something went wrong.");
   return data;
 }
+async function loadWallet() {
+  if (!state.token) return;
 
+  try {
+    const data = await api("/wallet/mine", {
+      auth: true
+    });
+
+    state.wallet.balance = Number(data.balance || 0);
+    state.wallet.methods = Array.isArray(data.methods)
+      ? data.methods
+      : [];
+    state.wallet.transactions = Array.isArray(data.transactions)
+      ? data.transactions
+      : [];
+  } catch (error) {
+    console.error("Wallet load error:", error);
+  }
+}
 const fmt = (n) => `Rs ${Number(n).toLocaleString("en-PK")}`;
 const img = (url, fallbackSeed, size = 500) => url || `https://picsum.photos/seed/${fallbackSeed}/${size}/${size}`;
 
@@ -401,8 +425,8 @@ const isWallet = state.paymentMethod !== "card" && state.paymentMethod !== "cod"
             </div>
 
             ${
-              isWallet
-                ? `
+              state.paymentMethod !== "card"
+  ? `
               <div class="wallet-box">
                 Send <b>${fmt(cartTotal() + shippingFee())}</b> via <b>${PAY_METHODS.find((m) => m.id === state.paymentMethod).label}</b> to <b>${WALLET_NUMBER}</b>,
                 then enter the transaction ID below. Your order will show as <b>pending verification</b> until we confirm the payment.
@@ -646,18 +670,45 @@ return;
   }
   if (e.target.id === "logoBtn") goHome();
   if (e.target.id === "accountBtn" || e.target.closest("#accountBtn")) {
-    if (state.user) {
-      const choice = prompt(`Logged in as ${state.user.name}.\nType "orders" to view your orders, "admin" for the admin dashboard, or "logout" to log out.`);
-      if (choice === "orders") goMyOrders();
-      else if (choice === "logout") logout();
-      else if (choice === "admin" && state.user.role === "admin") window.location.href = "/admin";
-    } else {
-      state.authModal = "login";
-      state.authError = "";
-      render();
+  if (state.user) {
+    const newName = prompt("Edit Name:", state.user.name);
+
+    if (newName && newName.trim()) {
+      state.user.name = newName.trim();
+      localStorage.setItem("mandi_user", JSON.stringify(state.user));
+      updateHeaderChrome();
     }
+  } else {
+    state.authModal = "login";
+    state.authError = "";
+    render();
   }
-});
+
+  return;
+}
+  if (e.target.id === "profileBtn" || e.target.closest("#profileBtn")) {
+  if (state.user) {
+    window.location.href = "/account-website.html";
+  } else {
+    state.authModal = "login";
+    state.authError = "";
+    render();
+  }
+  return;
+}
+ if (e.target.id === "logoutBtn" || e.target.closest("#logoutBtn")) {
+  if (state.user) {
+    logout();
+  } else {
+    state.authModal = "login";
+    state.authError = "";
+    render();
+  }
+  return;
+}
+}
+  
+);
 
 document.addEventListener("input", (e) => {
   if (e.target.id === "searchInput") {
@@ -685,5 +736,6 @@ document.addEventListener("input", (e) => {
     document.getElementById("app").innerHTML = `<div class="wrap" style="padding:60px 16px;text-align:center;color:var(--muted)">Could not reach the server. Is it running?</div>`;
     return;
   }
+  await loadWallet();
   render();
 })();

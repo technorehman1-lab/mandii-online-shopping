@@ -220,4 +220,4 @@ select.status-select { font-size: 12px; padding: 4px 6px; border-radius: 6px; bo
 @keyframes slideOver { from { transform: translateX(100%); } to { transform: translateX(0); } }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 .fade-in { animation: fadeIn .25s ease-out; }
-.line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; }

@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Account — Account Center</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+  :root{
+  --ink:#7c4a03;
+  --ink-soft:#a16207;
+  --accent:#f59e0b;
+  --accent-dark:#d97706;
+  --teal:#f59e0b;
+  --teal-dark:#d97706;
+  --bg:#fff8ef;
+  --card:#ffffff;
+  --border:#f3d5a3;
+  --text:#1f2937;
+  --muted:#6b7280;
+  --danger:#e6392b;
+  --purple:#f59e0b;
+  --radius:14px;
+}
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    font-family:'Inter',-apple-system,sans-serif;
+    color:var(--text);
+  }
+  h1,h2,h3,h4{font-family:'Poppins',sans-serif;margin:0;}
+  a{text-decoration:none;color:inherit;}
+  button{font-family:inherit;}
+
+  /* ===================== TOP BAR ===================== */
+  .topbar{
+    height:66px;background:var(--ink);color:#fff;display:flex;align-items:center;
+    padding:0 24px;gap:20px;position:sticky;top:0;z-index:40;
+  }
+  .topbar .logo{font-family:'Poppins',sans-serif;font-weight:800;font-size:19px;letter-spacing:.3px;display:flex;align-items:center;gap:8px;flex:none;}
+  .topbar .logo i{color:var(--accent);}
+  .topbar .search{
+    flex:1;max-width:520px;background:rgba(255,255,255,.1);border-radius:8px;display:flex;align-items:center;
+    padding:0 14px;height:38px;
+  }
+  .topbar .search input{
+    background:transparent;border:none;outline:none;color:#fff;font-size:13.5px;flex:1;margin-left:8px;
+  }
+  .topbar .search input::placeholder{color:rgba(255,255,255,.6);}
+  .topbar .spacer{flex:1;}
+  .top-actions{display:flex;align-items:center;gap:22px;}
+  .top-actions .ta-item{position:relative;cursor:pointer;font-size:17px;color:#dfe3ee;}
+  .top-actions .ta-item:hover{color:#fff;}
+  .top-actions .ta-badge{
+    position:absolute;top:-7px;right:-9px;background:var(--accent);color:#fff;font-size:9.5px;font-weight:700;
+    min-width:16px;height:16px;border-radius:8px;display:flex;align-items:center;justify-content:center;padding:0 3px;
+  }
+  .top-actions .ta-user{display:flex;align-items:center;gap:8px;cursor:pointer;padding-left:16px;border-left:1px solid rgba(255,255,255,.15);}
+  .top-actions .ta-user .av{width:30px;height:30px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;}
+  .top-actions .ta-user span{font-size:13.5px;font-weight:600;}
+
+  /* ===================== LAYOUT ===================== */
+  .layout{display:flex;max-width:1240px;margin:0 auto;align-items:flex-start;padding:24px 20px 60px;gap:24px;}
+
+  /* ---- sidebar ---- */
+  .sidebar{
+    width:270px;flex:none;background:var(--card);border-radius:var(--radius);border:1px solid var(--border);
+    overflow:hidden;position:sticky;top:90px;
+  }
+  .side-profile{padding:22px 20px;background:linear-gradient(135deg,var(--ink),var(--ink-soft));color:#fff;text-align:center;}
+  .side-profile .av{
+    width:64px;height:64px;border-radius:50%;background:#fff;color:var(--ink);margin:0 auto 10px;
+    display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;font-family:'Poppins';
+    border:3px solid rgba(255,255,255,.35);
+  }
+  .side-profile h3{font-size:16px;}
+  .side-profile .edit-name{
+    margin-top:8px;background:rgba(255,255,255,.12);border:none;color:#fff;font-size:12px;padding:5px 12px;
+    border-radius:14px;cursor:pointer;
+  }
+  .side-stats{display:flex;border-bottom:1px solid var(--border);}
+  .side-stats div{flex:1;text-align:center;padding:12px 4px;border-right:1px solid var(--border);}
+  .side-stats div:last-child{border-right:none;}
+  .side-stats b{display:block;font-size:16px;}
+  .side-stats span{font-size:10.5px;color:var(--muted);}
+  .side-nav{padding:10px;}
+  .side-nav .sn-item{
+    display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:9px;font-size:14px;font-weight:600;
+    color:var(--text);cursor:pointer;position:relative;
+  }
+  .side-nav .sn-item i{width:18px;color:var(--muted);font-size:15px;}
+  .side-nav .sn-item:hover{background:#f5f6fb;}
+  .side-nav .sn-item.active{background:#fff3e8;color:var(--accent-dark);}
+  .side-nav .sn-item.active i{color:var(--accent-dark);}
+  .side-nav .sn-item .cnt{
+    margin-left:auto;background:var(--danger);color:#fff;font-size:10.5px;font-weight:700;padding:1px 7px;border-radius:9px;
+  }
+  .side-nav hr{border:none;border-top:1px solid var(--border);margin:8px 6px;}
+
+  /* ---- main content ---- */
+  .main{flex:1;min-width:0;}
+  .panel{display:none;}
+  .panel.active{display:block;}
+  .page-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
+  .page-head h2{font-size:22px;}
+  .page-head .ph-sub{font-size:13px;color:var(--muted);margin-top:4px;}
+
+  .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:22px;}
+  .card + .card{margin-top:20px;}
+
+  /* ---- overview promos ---- */
+  .promo-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .promo{
+    border-radius:var(--radius);padding:20px;color:#fff;display:flex;align-items:center;gap:16px;cursor:pointer;
+    position:relative;overflow:hidden;
+  }
+  .promo.p1{background:linear-gradient(135deg,#ff9d3a,#d97706);}
+  .promo.p2{background:linear-gradient(135deg,#ff9d3a,#ff5722);}
+  .promo .p-ic{font-size:30px;opacity:.9;}
+  .promo .p-txt h4{font-size:16px;margin-bottom:4px;}
+  .promo .p-txt p{margin:0 0 10px;font-size:13px;opacity:.9;}
+  .promo button{background:rgba(255,255,255,.22);border:none;color:#fff;padding:6px 16px;border-radius:16px;font-size:12.5px;font-weight:700;cursor:pointer;}
+
+  .quicklinks{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;margin-top:20px;}
+  .ql{text-align:center;cursor:pointer;}
+  .ql .box{width:46px;height:46px;border-radius:12px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;}
+  .ql span{font-size:12px;font-weight:600;color:var(--text);}
+  .ql:nth-child(1) .box{background:#f59e0b;}
+  .ql:nth-child(2) .box{background:#f59e0b;}
+  .ql:nth-child(3) .box{background:var(--accent);}
+  .ql:nth-child(4) .box{background:#f59e0b;}
+  .ql:nth-child(5) .box{background:#eab308;}
+  .ql:nth-child(6) .box{background:var(--teal);}
+
+  .section-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
+  .section-title h3{font-size:16px;}
+  .section-title .link{font-size:13px;color:var(--accent-dark);font-weight:600;cursor:pointer;}
+
+  .order-stat-row{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;}
+  .order-stat{
+    border:1px solid var(--border);border-radius:12px;padding:16px 10px;text-align:center;cursor:pointer;position:relative;
+    transition:.15s;
+  }
+  .order-stat:hover{border-color:var(--accent);background:#fffaf4;}
+  .order-stat i{font-size:20px;color:var(--accent-dark);margin-bottom:8px;display:block;}
+  .order-stat span{font-size:12.5px;font-weight:600;}
+  .order-stat .cnt{
+    position:absolute;top:8px;right:10px;background:var(--danger);color:#fff;font-size:10px;font-weight:700;
+    min-width:16px;height:16px;border-radius:8px;display:flex;align-items:center;justify-content:center;
+  }
+
+  .two-col{display:grid;grid-template-columns:1.3fr 1fr;gap:20px;}
+  .rv-card p{font-size:13.5px;color:var(--muted);line-height:1.6;margin:0 0 14px;max-width:80%;}
+  .rv-card button{background:var(--accent);color:#fff;border:none;padding:10px 20px;border-radius:8px;font-weight:700;font-size:13.5px;cursor:pointer;}
+  .wallet-mini{display:flex;flex-direction:column;gap:12px;}
+  .wallet-mini .wm-row{display:flex;justify-content:space-between;align-items:center;background:#f7f7fb;border-radius:10px;padding:14px 16px;cursor:pointer;}
+  .wallet-mini .wm-row .l{font-size:13px;color:var(--muted);}
+  .wallet-mini .wm-row .v{font-size:19px;font-weight:800;font-family:'Poppins';}
+  .wallet-mini .wm-row .pill{font-size:11.5px;background:var(--accent);color:#fff;padding:3px 10px;border-radius:12px;font-weight:700;}
+
+  .more-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+  .mi{text-align:center;cursor:pointer;}
+  .mi .box{width:44px;height:44px;border-radius:11px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:17px;}
+  .mi span{font-size:12px;font-weight:600;}
+  .mi:nth-child(1) .box{background:#06b6d4;}
+  .mi:nth-child(2) .box{background:#eab308;}
+  .mi:nth-child(3) .box{background:#f97316;}
+  .mi:nth-child(4) .box{background:#ec4899;}
+  .mi:nth-child(5) .box{background:#3b82f6;}
+  .mi:nth-child(6) .box{background:#8b5cf6;}
+  .mi:nth-child(7) .box{background:#22c55e;}
+  .mi:nth-child(8) .box{background:#ef4444;}
+
+  /* ---- orders panel ---- */
+  .order-tabs{display:flex;gap:8px;border-bottom:1px solid var(--border);margin-bottom:20px;flex-wrap:wrap;}
+  .order-tab{
+    padding:10px 16px;font-size:13.5px;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;
+    display:flex;align-items:center;gap:6px;
+  }
+  .order-tab.active{color:var(--accent-dark);border-color:var(--accent);}
+  .order-tab .b{background:var(--danger);color:#ad660a;font-size:10px;padding:1px 6px;border-radius:8px;font-weight:700;}
+
+  .order-row{
+    display:flex;align-items:center;gap:18px;border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:14px;
+  }
+  .order-row .thumb{width:64px;height:64px;border-radius:10px;background:#e67238;flex:none;display:flex;align-items:center;justify-content:center;font-size:24px;color:#b7bacb;}
+  .order-row .info{flex:1;min-width:0;}
+  .order-row .info .top-line{display:flex;gap:10px;align-items:center;margin-bottom:4px;flex-wrap:wrap;}
+  .order-row .info .seller{font-size:12.5px;color:var(--muted);font-weight:600;}
+  .order-row .info .oid{font-size:12px;color:var(--muted);}
+  .order-row .info .name{font-size:14.5px;font-weight:600;margin-bottom:4px;}
+  .order-row .info .sub{font-size:12.5px;color:var(--muted);}
+  .order-row .price{font-size:15.5px;font-weight:800;font-family:'Poppins';white-space:nowrap;}
+  .order-row .status-col{width:120px;text-align:center;flex:none;}
+  .status-pill{display:inline-block;font-size:11.5px;font-weight:700;padding:5px 12px;border-radius:14px;}
+  .status-to_pay{background:#fdecea;color:var(--danger);}
+  .status-to_ship{background:#fff4e5;color:#c9720b;}
+  .status-to_receive{background:#e8f0fe;color:#2a6df4;}
+  .status-to_review{background:#f2ecff;color:#7c3aed;}
+  .status-completed{background:#e6f7ee;color:#1e9e5a;}
+  .status-cancelled,.status-returned{background:#f33838;color:#888;}
+  .order-actions{display:flex;flex-direction:column;gap:8px;flex:none;width:150px;}
+  .btn{border:none;border-radius:8px;padding:9px 14px;font-size:12.5px;font-weight:700;cursor:pointer;white-space:nowrap;}
+  .btn-primary{background:var(--accent);color:#fff;}
+  .btn-primary:hover{background:var(--accent-dark);}
+  .btn-outline{background:#fff;color:var(--text);border:1px solid #d8d8db;}
+  .btn-outline:hover{border-color:var(--text);}
+  .btn-ghost{background:#f2f2f5;color:var(--muted);}
+
+  .empty-state{text-align:center;padding:60px 30px;color:var(--muted);}
+  .empty-state i{font-size:40px;margin-bottom:14px;color:#ddd;display:block;}
+
+  /* ---- wallet panel ---- */
+  .wallet-hero{
+    background:linear-gradient(135deg,var(--teal),var(--teal-dark));color:#fff;border-radius:var(--radius);
+    padding:26px 28px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px;
+  }
+  .wallet-hero .bal-lbl{font-size:13.5px;opacity:.85;margin-bottom:6px;}
+  .wallet-hero .bal-val{font-size:36px;font-weight:800;font-family:'Poppins';}
+  .wallet-hero .bal-val small{font-size:16px;font-weight:600;margin-right:6px;}
+  .wallet-hero .sub-stats{display:flex;gap:34px;}
+  .wallet-hero .sub-stats div{font-size:12.5px;opacity:.9;}
+  .wallet-hero .sub-stats div b{display:block;font-size:17px;font-weight:800;margin-top:4px;font-family:'Poppins';}
+  .wallet-hero button{background:var(--accent);color:#fff;border:none;padding:12px 22px;border-radius:9px;font-weight:700;font-size:14px;cursor:pointer;}
+
+  .wallet-actions-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;}
+  .wa{text-align:center;cursor:pointer;padding:14px 6px;border-radius:10px;}
+  .wa:hover{background:#f7f7fb;}
+  .wa .ic{font-size:24px;color:var(--teal-dark);margin-bottom:8px;}
+  .wa span{font-size:12px;font-weight:600;}
+
+  table.tx-table{width:100%;border-collapse:collapse;}
+  table.tx-table th{text-align:left;font-size:11.5px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);padding:10px 8px;border-bottom:1px solid var(--border);}
+  table.tx-table td{padding:12px 8px;border-bottom:1px solid var(--border);font-size:13.5px;}
+  table.tx-table tr:last-child td{border-bottom:none;}
+  .tx-ic{width:32px;height:32px;border-radius:8px;background:#eef7f4;color:var(--teal-dark);display:flex;align-items:center;justify-content:center;font-size:13px;}
+  .amt-pos{color:#1e9e5a;font-weight:700;}
+  .amt-neg{color:var(--danger);font-weight:700;}
+  .s-tag{font-size:11px;padding:2px 9px;border-radius:10px;font-weight:700;}
+  .s-success{background:#e6f7ee;color:#1e9e5a;}
+  .s-failed{background:#fdecea;color:var(--danger);}
+
+  /* ---- payment methods panel ---- */
+  .pm-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+  .pm-card{border:1px solid var(--border);border-radius:12px;padding:18px;position:relative;}
+  .pm-card .pm-top{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+  .pm-card .ic{width:38px;height:38px;border-radius:9px;background:#eef7f4;color:var(--teal-dark);display:flex;align-items:center;justify-content:center;font-size:16px;}
+  .pm-card .brand{font-size:11.5px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.3px;}
+  .pm-card .num{font-size:16px;font-weight:700;font-family:'Poppins';}
+  .pm-card .pm-remove{
+    position:absolute;top:14px;right:14px;color:#bbb;cursor:pointer;font-size:14px;
+  }
+  .pm-card .pm-remove:hover{color:var(--danger);}
+  .pm-add{
+    border:1.5px dashed var(--teal);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-direction:column;
+    gap:8px;color:var(--teal-dark);font-weight:700;font-size:13.5px;cursor:pointer;background:#f2fbf8;min-height:100px;
+  }
+  .pm-add i{font-size:20px;}
+
+  /* ---- settings panel ---- */
+  .set-row{display:flex;align-items:center;gap:14px;padding:16px 4px;border-bottom:1px solid var(--border);}
+  .set-row:last-child{border-bottom:none;}
+  .set-row i{width:20px;color:var(--muted);font-size:16px;}
+  .set-row .lbl{flex:1;font-size:14px;font-weight:500;}
+  .set-row .lbl small{display:block;font-size:12px;color:var(--muted);font-weight:400;margin-top:2px;}
+  .switch{width:42px;height:23px;background:#ddd;border-radius:12px;position:relative;cursor:pointer;transition:.2s;flex:none;}
+  .switch.on{background:var(--accent);}
+  .switch .knob{width:19px;height:19px;background:#fff;border-radius:50%;position:absolute;top:2px;left:2px;transition:.2s;}
+  .switch.on .knob{left:21px;}
+  .field-inline{display:flex;gap:10px;}
+  .field-inline input{flex:1;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;}
+  .field-inline button{background:var(--ink);color:#fff;border:none;padding:0 18px;border-radius:8px;font-weight:600;font-size:13px;cursor:pointer;}
+  .danger-btn{border:1px solid var(--danger);background:#fff;color:var(--danger);padding:11px 20px;border-radius:8px;font-weight:700;font-size:13.5px;cursor:pointer;margin-top:20px;}
+
+  /* ===================== MODALS ===================== */
+  .overlay{position:fixed;inset:0;background:rgba(20,33,61,.55);z-index:100;display:none;align-items:center;justify-content:center;padding:20px;}
+  .overlay.active{display:flex;}
+  .modal{background:#fff;width:100%;max-width:420px;border-radius:16px;padding:24px;max-height:88vh;overflow-y:auto;}
+  .modal h3{margin:0 0 18px;font-size:17px;}
+  .modal .close-x{float:right;font-size:18px;color:#999;cursor:pointer;}
+  .field{margin-bottom:14px;}
+  .field label{font-size:12.5px;color:var(--muted);display:block;margin-bottom:6px;font-weight:600;}
+  .field input,.field select,.field textarea{width:100%;padding:11px;border:1px solid var(--border);border-radius:8px;font-size:14px;font-family:inherit;}
+  .method-pick{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;}
+  .method-pick .mp{border:1.5px solid var(--border);border-radius:9px;padding:10px 14px;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:8px;}
+  .method-pick .mp.sel{border-color:var(--accent);background:#fff3e8;color:var(--accent-dark);font-weight:700;}
+  .modal .confirm-btn{width:100%;padding:13px;border:none;border-radius:9px;background:var(--accent);color:#fff;font-weight:700;font-size:14.5px;cursor:pointer;margin-top:6px;}
+  .modal .confirm-btn.teal{background:var(--teal);}
+  .stars{display:flex;gap:8px;font-size:28px;margin-bottom:16px;justify-content:center;color:#ddd;}
+  .stars i{cursor:pointer;}
+  .stars i.filled{color:#ffb400;}
+
+  .timeline{padding:6px 0 0 6px;}
+  .tl-step{display:flex;gap:14px;position:relative;padding-bottom:26px;}
+  .tl-step:last-child{padding-bottom:0;}
+  .tl-step .dot{width:14px;height:14px;border-radius:50%;background:#ddd;flex:none;margin-top:2px;position:relative;z-index:2;}
+  .tl-step.done .dot{background:#1e9e5a;}
+  .tl-step:not(:last-child)::before{content:'';position:absolute;left:6px;top:16px;bottom:-10px;width:2px;background:#eee;}
+  .tl-step.done:not(:last-child)::before{background:#1e9e5a;}
+  .tl-step .tl-txt .t1{font-size:13.5px;font-weight:600;}
+  .tl-step .tl-txt .t2{font-size:11.5px;color:var(--muted);margin-top:2px;}
+  .tl-step:not(.done) .tl-txt{opacity:.5;}
+
+  .toast{
+    position:fixed;bottom:26px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:12px 22px;
+    border-radius:24px;font-size:13.5px;z-index:200;opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;
+    white-space:nowrap;box-shadow:0 6px 20px rgba(0,0,0,.2);
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(-6px);}
+
+  /* ===================== RESPONSIVE ===================== */
+  @media (max-width:980px){
+    .promo-grid{grid-template-columns:1fr;}
+    .quicklinks{grid-template-columns:repeat(3,1fr);}
+    .order-stat-row{grid-template-columns:repeat(3,1fr);}
+    .two-col{grid-template-columns:1fr;}
+    .more-grid{grid-template-columns:repeat(2,1fr);}
+    .pm-grid{grid-template-columns:repeat(2,1fr);}
+    .wallet-actions-grid{grid-template-columns:repeat(3,1fr);}
+  }
+  @media (max-width:800px){
+    .layout{flex-direction:column;}
+    .sidebar{width:100%;position:static;}
+    .side-nav{display:flex;overflow-x:auto;gap:4px;padding:10px;}
+    .side-nav .sn-item{flex:0 0 auto;}
+    .side-nav hr{display:none;}
+    .topbar .search{display:none;}
+    .order-row{flex-wrap:wrap;}
+    .order-row .status-col{width:auto;order:3;}
+    .order-actions{width:auto;flex-direction:row;order:4;margin-left:auto;}
+  }
+  @media (max-width:520px){
+    .quicklinks{grid-template-columns:repeat(2,1fr);}
+    .order-stat-row{grid-template-columns:repeat(2,1fr);}
+    .pm-grid{grid-template-columns:1fr;}
+    .wallet-actions-grid{grid-template-columns:repeat(2,1fr);}
+    .wallet-hero{flex-direction:column;align-items:flex-start;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ===================== TOP BAR ===================== -->
+<div class="topbar">
+  <div class="logo"><i class="fa-solid fa-cart-shopping"></i> Account Center</div>
+  <div class="search"><i class="fa-solid fa-magnifying-glass" style="color:rgba(255,255,255,.6);font-size:13px;"></i>
+    <input type="text" placeholder="Search orders, help articles..." onkeydown="if(event.key==='Enter'){toast('Search is not connected yet.');}">
+  </div>
+  <div class="spacer"></div>
+  <div class="top-actions">
+    <div class="ta-item"><i class="fa-solid fa-bell"></i><span class="ta-badge">2</span></div>
+    <div class="ta-item"><i class="fa-regular fa-heart"></i></div>
+    <div class="ta-item"><i class="fa-solid fa-cart-shopping"></i><span class="ta-badge">6</span></div>
+    <div class="ta-user" onclick="showPanel('panel-settings')"><div class="av" id="topbar-initial">C</div><span id="topbar-name">Customer</span></div>
+  </div>
+</div>
+
+<div class="layout">
+
+  <!-- ===================== SIDEBAR ===================== -->
+  <div class="sidebar">
+    <div class="side-profile">
+      <div class="av" id="side-initial">C</div>
+      <h3 id="side-name">Customer</h3>
+      <button class="edit-name" onclick="showPanel('panel-settings')">Edit Profile</button>
+    </div>
+    <div class="side-stats">
+      <div><b id="stat-wishlist">0</b><span>Wishlist</span></div>
+      <div><b id="stat-stores">0</b><span>Stores</span></div>
+      <div><b id="stat-vouchers">0</b><span>Vouchers</span></div>
+    </div>
+    <div class="side-nav">
+      <div class="sn-item active" data-panel="panel-overview" onclick="showPanel('panel-overview')"><i class="fa-solid fa-gauge"></i> Overview</div>
+      <div class="sn-item" data-panel="panel-orders" onclick="showPanel('panel-orders')"><i class="fa-solid fa-box"></i> My Orders <span class="cnt" id="nav-cnt-orders"></span></div>
+      <div class="sn-item" data-panel="panel-wallet" onclick="showPanel('panel-wallet')"><i class="fa-solid fa-wallet"></i> Wallet</div>
+      <div class="sn-item" data-panel="panel-payment" onclick="showPanel('panel-payment')"><i class="fa-solid fa-credit-card"></i> Payment Methods</div>
+      <div class="sn-item" data-panel="panel-vouchers" onclick="showPanel('panel-vouchers')"><i class="fa-solid fa-ticket"></i> Vouchers</div>
+      <hr>
+      <div class="sn-item" data-panel="panel-settings" onclick="showPanel('panel-settings')"><i class="fa-solid fa-gear"></i> Settings</div>
+    </div>
+  </div>
+
+  <!-- ===================== MAIN ===================== -->
+  <div class="main">
+
+    <!-- ---------- OVERVIEW ---------- -->
+    <div class="panel active" id="panel-overview">
+      <div class="page-head"><div><h2>Welcome back<span id="overview-name-suffix"></span></h2><div class="ph-sub">Here's what's happening with your account.</div></div></div>
+
+      <div class="card">
+        <div class="promo-grid">
+          <div class="promo p1">
+            <div class="p-ic"><i class="fa-solid fa-coins"></i></div>
+            <div class="p-txt"><h4>Reward Coins</h4><p>Redeem coins for up to 99% off</p><button>Use Now</button></div>
+          </div>
+          <div class="promo p2">
+            <div class="p-ic"><i class="fa-solid fa-gift"></i></div>
+            <div class="p-txt"><h4>Invite &amp; Earn</h4><p>Get free credit for every friend</p><button>Play</button></div>
+          </div>
+        </div>
+        <div class="quicklinks">
+          <div class="ql"><div class="box"><i class="fa-solid fa-seedling"></i></div><span>Green Store</span></div>
+          <div class="ql"><div class="box"><i class="fa-solid fa-champagne-glasses"></i></div><span>Member Club</span></div>
+          <div class="ql"><div class="box"><i class="fa-solid fa-bolt"></i></div><span>Pay Bills</span></div>
+          <div class="ql" onclick="showPanel('panel-vouchers')"><div class="box"><i class="fa-solid fa-ticket"></i></div><span>Vouchers</span></div>
+          <div class="ql"><div class="box"><i class="fa-solid fa-layer-group"></i></div><span>Bundle Deals</span></div>
+          <div class="ql" onclick="showPanel('panel-payment')"><div class="box"><i class="fa-solid fa-credit-card"></i></div><span>Payments</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-title"><h3>My Orders</h3><div class="link" onclick="openOrders('all')">View all orders <i class="fa-solid fa-chevron-right"></i></div></div>
+        <div class="order-stat-row">
+          <div class="order-stat" onclick="openOrders('to_pay')"><span class="cnt" id="badge-to_pay"></span><i class="fa-solid fa-wallet"></i><span>To Pay</span></div>
+          <div class="order-stat" onclick="openOrders('to_ship')"><span class="cnt" id="badge-to_ship"></span><i class="fa-solid fa-box"></i><span>To Ship</span></div>
+          <div class="order-stat" onclick="openOrders('to_receive')"><span class="cnt" id="badge-to_receive"></span><i class="fa-solid fa-truck-fast"></i><span>To Receive</span></div>
+          <div class="order-stat" onclick="openOrders('to_review')"><span class="cnt" id="badge-to_review"></span><i class="fa-solid fa-comment-dots"></i><span>To Review</span></div>
+          <div class="order-stat" onclick="openOrders('returns')"><span class="cnt" id="badge-returns"></span><i class="fa-solid fa-rotate-left"></i><span>Returns</span></div>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="card rv-card">
+          <div class="section-title"><h3>Recently Viewed</h3><div class="link">View more <i class="fa-solid fa-chevron-right"></i></div></div>
+          <p>Rediscover the delightful items you've viewed recently — pick up right where you left off.</p>
+          <button>Continue Shopping</button>
+        </div>
+        <div class="card">
+          <div class="section-title"><h3>Daraz Wallet</h3></div>
+          <div class="wallet-mini">
+            <div class="wm-row" onclick="showPanel('panel-wallet')"><div><div class="l">Wallet Balance</div><div class="v">Rs. <span id="mini-balance">0</span></div></div><span class="pill" onclick="event.stopPropagation();openDeposit()">Deposit</span></div>
+            <div class="wm-row" onclick="showPanel('panel-payment')"><div><div class="l">Payment Options</div><div class="v" id="mini-methods">0</div></div><i class="fa-solid fa-chevron-right" style="color:#bbb;"></i></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-title"><h3>More Services</h3></div>
+        <div class="more-grid">
+          <div class="mi"><div class="box"><i class="fa-solid fa-envelope"></i></div><span>Messages</span></div>
+          <div class="mi"><div class="box"><i class="fa-solid fa-layer-group"></i></div><span>Bundle Deals</span></div>
+          <div class="mi"><div class="box"><i class="fa-solid fa-map-location-dot"></i></div><span>Pickup Points</span></div>
+          <div class="mi"><div class="box"><i class="fa-solid fa-users"></i></div><span>Affiliates</span></div>
+          <div class="mi"><div class="box"><i class="fa-solid fa-circle-question"></i></div><span>Help Center</span></div>
+          <div class="mi"><div class="box"><i class="fa-solid fa-headset"></i></div><span>Live Chat</span></div>
+          <div class="mi" onclick="showPanel('panel-vouchers')"><div class="box"><i class="fa-solid fa-star"></i></div><span>Reviews</span></div>
+          <div class="mi"><div class="box"><i class="fa-solid fa-tag"></i></div><span>Buy &amp; Save</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ---------- ORDERS ---------- -->
+    <div class="panel" id="panel-orders">
+      <div class="page-head"><div><h2>My Orders</h2><div class="ph-sub">Track, pay, and manage every order in one place.</div></div></div>
+      <div class="card">
+        <div class="order-tabs" id="order-tabs"></div>
+        <div id="order-list"></div>
+      </div>
+    </div>
+
+    <!-- ---------- WALLET ---------- -->
+    <div class="panel" id="panel-wallet">
+      <div class="page-head"><div><h2>Wallet</h2><div class="ph-sub">Manage your balance, deposits and refunds.</div></div></div>
+      <div class="wallet-hero">
+        <div>
+          <div class="bal-lbl">Total Balance</div>
+          <div class="bal-val"><small>Rs.</small><span id="wallet-balance-big">0</span></div>
+        </div>
+        <div class="sub-stats">
+          <div>Deposits<b id="stat-deposits">Rs.0</b></div>
+          <div>Refunds<b id="stat-refunds">Rs.0</b></div>
+          <div>Rewards<b id="stat-rewards">Rs.0</b></div>
+        </div>
+        <button onclick="openDeposit()">Deposit Now</button>
+      </div>
+
+      <div class="card">
+        <div class="section-title"><h3>Quick Actions</h3></div>
+        <div class="wallet-actions-grid">
+          <div class="wa"><div class="ic"><i class="fa-solid fa-droplet"></i></div><span>Utility Payment</span></div>
+          <div class="wa"><div class="ic"><i class="fa-solid fa-mobile-screen"></i></div><span>Mobile Top-ups</span></div>
+          <div class="wa" onclick="showPanel('panel-vouchers')"><div class="ic"><i class="fa-solid fa-ticket"></i></div><span>My Vouchers</span></div>
+          <div class="wa"><div class="ic"><i class="fa-solid fa-percent"></i></div><span>Offers</span></div>
+          <div class="wa" onclick="showPanel('panel-payment')"><div class="ic"><i class="fa-solid fa-money-bill-wave"></i></div><span>Payment Methods</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-title"><h3>Recent Transactions</h3></div>
+        <table class="tx-table"><thead><tr><th></th><th>Transaction</th><th>Date</th><th>Amount</th><th>Status</th></tr></thead>
+          <tbody id="tx-list"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ---------- PAYMENT METHODS ---------- -->
+    <div class="panel" id="panel-payment">
+      <div class="page-head"><div><h2>Payment Methods</h2><div class="ph-sub">Wallets and bank accounts linked to your account.</div></div></div>
+      <div class="card">
+        <div class="section-title"><h3>Digital Wallets</h3></div>
+        <div class="pm-grid" id="pm-wallet"></div>
+      </div>
+      <div class="card">
+        <div class="section-title"><h3>Bank / Withdraw Accounts</h3></div>
+        <div class="pm-grid" id="pm-bank"></div>
+      </div>
+    </div>
+
+    <!-- ---------- VOUCHERS ---------- -->
+    <div class="panel" id="panel-vouchers">
+      <div class="page-head"><div><h2>My Vouchers</h2><div class="ph-sub">Discounts and coupons you've collected.</div></div></div>
+      <div class="card"><div class="empty-state"><i class="fa-solid fa-ticket"></i>No vouchers available right now.<br>Check back after your next order!</div></div>
+    </div>
+
+    <!-- ---------- SETTINGS ---------- -->
+    <div class="panel" id="panel-settings">
+      <div class="page-head"><div><h2>Settings</h2><div class="ph-sub">Manage your profile and preferences.</div></div></div>
+      <div class="card">
+        <div class="field" style="max-width:360px;">
+          <label>Display name</label>
+          <div class="field-inline">
+            <input id="name-input" type="text" value="Customer" oninput="updateName(this.value)">
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="set-row"><i class="fa-solid fa-bell"></i><div class="lbl">Push Notifications<small>Order updates and promotions</small></div><div class="switch on" onclick="this.classList.toggle('on')"><div class="knob"></div></div></div>
+        <div class="set-row"><i class="fa-solid fa-envelope-open-text"></i><div class="lbl">Email Alerts<small>Receipts and account activity</small></div><div class="switch on" onclick="this.classList.toggle('on')"><div class="knob"></div></div></div>
+        <div class="set-row"><i class="fa-solid fa-lock"></i><div class="lbl">Two-Factor Login<small>Extra security at sign-in</small></div><div class="switch" onclick="this.classList.toggle('on')"><div class="knob"></div></div></div>
+        <div class="set-row" style="cursor:pointer;"><i class="fa-solid fa-language"></i><div class="lbl">Language</div><span style="color:var(--muted);font-size:13px;">English</span></div>
+        <div class="set-row" style="cursor:pointer;"><i class="fa-solid fa-shield-halved"></i><div class="lbl">Privacy &amp; Security</div></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===================== MODALS ===================== -->
+<div class="overlay" id="overlay-deposit">
+  <div class="modal">
+    <span class="close-x" onclick="closeOverlay('overlay-deposit')">&times;</span>
+    <h3>Deposit to Wallet</h3>
+    <div class="field"><label>Amount (Rs.)</label><input type="number" id="deposit-amount" placeholder="e.g. 500"></div>
+    <label style="font-size:12.5px;color:var(--muted);display:block;margin-bottom:8px;font-weight:600;">Pay via</label>
+    <div class="method-pick" id="deposit-methods"></div>
+    <button class="confirm-btn teal" onclick="confirmDeposit()">Deposit Now</button>
+  </div>
+</div>
+
+<div class="overlay" id="overlay-pay">
+  <div class="modal">
+    <span class="close-x" onclick="closeOverlay('overlay-pay')">&times;</span>
+    <h3>Choose Payment Method</h3>
+    <div class="method-pick" id="pay-methods"></div>
+    <div id="pay-summary" style="font-size:13px;color:var(--muted);margin-bottom:14px;"></div>
+    <button class="confirm-btn" onclick="confirmPay()">Pay Now</button>
+  </div>
+</div>
+
+<div class="overlay" id="overlay-track">
+  <div class="modal">
+    <span class="close-x" onclick="closeOverlay('overlay-track')">&times;</span>
+    <h3 id="track-title">Track Order</h3>
+    <div class="timeline" id="track-timeline"></div>
+    <button class="confirm-btn" id="track-action-btn" style="margin-top:18px;">OK</button>
+  </div>
+</div>
+
+<div class="overlay" id="overlay-review">
+  <div class="modal">
+    <span class="close-x" onclick="closeOverlay('overlay-review')">&times;</span>
+    <h3 style="text-align:center;">Rate your order</h3>
+    <div class="stars" id="review-stars">
+      <i class="fa-solid fa-star" data-v="1"></i><i class="fa-solid fa-star" data-v="2"></i>
+      <i class="fa-solid fa-star" data-v="3"></i><i class="fa-solid fa-star" data-v="4"></i>
+      <i class="fa-solid fa-star" data-v="5"></i>
+    </div>
+    <div class="field"><label>Comment (optional)</label><textarea rows="3" id="review-comment" placeholder="How was the product & delivery?"></textarea></div>
+    <button class="confirm-btn" onclick="submitReview()">Submit Review</button>
+  </div>
+</div>
+
+<div class="overlay" id="overlay-addmethod">
+  <div class="modal">
+    <span class="close-x" onclick="closeOverlay('overlay-addmethod')">&times;</span>
+    <h3>Link New Account</h3>
+    <div class="field"><label>Provider</label>
+      <select id="am-brand">
+        <option>JazzCash</option><option>EasyPaisa</option><option>Meezan Bank</option>
+        <option>HBL</option><option>UBL</option><option>Bank Alfalah</option>
+      </select>
+    </div>
+    <div class="field"><label>Account / Mobile Number</label><input id="am-number" type="text" placeholder="e.g. 0300 1234567"></div>
+    <button class="confirm-btn teal" onclick="confirmAddMethod()">Link Account</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ========================= MANDI ACCOUNT CENTER =========================
+   Real-data version:
+   - Uses the logged-in Mandi customer session from localStorage.
+   - Loads the customer's real orders from /api/orders/mine.
+   - Loads wallet data from /api/wallet when available.
+   - Never creates fake orders, fake balances, fake payment methods, or fake
+     successful payments in the browser.
+   - Actions that need a backend endpoint fail safely instead of changing only
+     browser memory.
+========================================================================== */
+
+const state = {
+  token: localStorage.getItem("mandi_token") || null,
+  user: JSON.parse(localStorage.getItem("mandi_user") || "null"),
+  name: "",
+  wishlist: 0,
+  stores: 0,
+  vouchers: 0,
+  wallet: { balance: 0, deposits: 0, refunds: 0, rewards: 0 },
+  transactions: [],
+  methods: [],
+  orders: [],
+  settings: {
+    notifications: true,
+    emailAlerts: true,
+    twoFactor: false,
+    language: "English"
+  }
+};
+
+let ctx = {};
+let currentOrderTab = "all";
+let toastTimer;
+
+const API = {
+  orders: "/orders/mine",
+  wallet: "/wallet",
+  walletMethods: "/wallet/methods",
+  walletTransactions: "/wallet/transactions",
+  paymentMethods: "/wallet/payment-methods",
+  settings: "/account/settings",
+  account: "/account"
+};
+
+function api(path, { method = "GET", body = null } = {}) {
+  const headers = { "Content-Type": "application/json" };
+  if (state.token) headers.Authorization = "Bearer " + state.token;
+
+  return fetch("/api" + path, {
+    method,
+    headers,
+    body: body == null ? undefined : JSON.stringify(body)
+  }).then(async (res) => {
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || data.message || "Request failed.");
+    return data;
+  });
+}
+
+function money(n) {
+  return "Rs. " + Number(n || 0).toLocaleString("en-PK");
+}
+
+function nowStr(value) {
+  const d = value ? new Date(value) : new Date();
+  if (Number.isNaN(d.getTime())) return "—";
+  return d.toLocaleDateString("en-GB", { day: "2-digit", month: "short" }) +
+    ", " +
+    d.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+}
+
+function escapeHtml(value) {
+  return String(value ?? "").replace(/[&<>"']/g, (m) => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+  }[m]));
+}
+
+function normalizeStatus(status, paymentMethod) {
+  const s = String(status || "").toLowerCase();
+
+  if (s === "cancelled" || s === "canceled") return "cancelled";
+  if (s === "delivered" || s === "completed") return "completed";
+  if (s === "out_for_delivery") return "to_receive";
+  if (s === "shipped") return "to_receive";
+  if (s === "processing") return "to_ship";
+  if (s === "pending_payment" || s === "pending_verification") return "to_pay";
+  if (s === "payment_verified") return "to_ship";
+
+  if (paymentMethod === "cod" && s === "paid") return "to_ship";
+
+  return s || "to_ship";
+}
+
+function normalizeOrder(raw) {
+  const items = Array.isArray(raw.items) ? raw.items : [];
+  const first = items[0] || {};
+
+  const qty = Number(first.qty || first.quantity || raw.qty || 1);
+  const total = Number(raw.total ?? raw.amount ?? raw.price ?? 0);
+
+  return {
+    id: raw.id ?? raw.order_id ?? raw.orderId ?? "—",
+    seller: raw.seller || "Mandi",
+    item: first.product_name || first.name || raw.product_name || raw.product || "Order",
+    qty,
+    price: qty > 0 ? total / qty : total,
+    total,
+    status: normalizeStatus(raw.status, raw.payment_method),
+    rawStatus: raw.status || "",
+    paymentMethod: raw.payment_method || "",
+    paymentReference: raw.payment_reference || "",
+    tracking: raw.tracking_number || raw.trackingNumber || "",
+    createdAt: raw.created_at || raw.createdAt || null
+  };
+}
+
+function counts() {
+  const c = { to_pay: 0, to_ship: 0, to_receive: 0, to_review: 0, returns: 0 };
+
+  state.orders.forEach((o) => {
+    if (o.status === "to_pay") c.to_pay++;
+    else if (o.status === "to_ship") c.to_ship++;
+    else if (o.status === "to_receive") c.to_receive++;
+    else if (o.status === "to_review") c.to_review++;
+    else if (o.status === "cancelled" || o.status === "returned") c.returns++;
+  });
+
+  return c;
+}
+
+function statusLabel(s) {
+  return {
+    to_pay: "To Pay",
+    to_ship: "To Ship",
+    to_receive: "To Receive",
+    to_review: "To Review",
+    completed: "Completed",
+    cancelled: "Cancelled",
+    returned: "Returned"
+  }[s] || s || "—";
+}
+
+/* ========================= LOAD REAL DATA ========================= */
+
+async function loadOrders() {
+  if (!state.token) {
+    state.orders = [];
+    return;
+  }
+
+  try {
+    const data = await api(API.orders);
+    const rows = Array.isArray(data) ? data : (data.orders || []);
+    state.orders = rows.map(normalizeOrder);
+  } catch (error) {
+    console.error("Orders:", error);
+    state.orders = [];
+    toast("Orders could not be loaded.");
+  }
+}
+
+async function loadWallet() {
+  if (!state.token) return;
+
+  try {
+    const data = await api(API.wallet);
+    const w = data.wallet || data;
+
+    state.wallet.balance = Number(w.balance ?? w.walletBalance ?? 0);
+    state.wallet.deposits = Number(w.deposits ?? 0);
+    state.wallet.refunds = Number(w.refunds ?? 0);
+    state.wallet.rewards = Number(w.rewards ?? 0);
+
+    if (Array.isArray(w.transactions)) {
+      state.transactions = w.transactions;
+    }
+    if (Array.isArray(w.methods)) {
+      state.methods = w.methods;
+    }
+  } catch (error) {
+    // The current Mandi backend may expose wallet data through a different
+    // route. Do not invent a balance in the browser.
+    console.warn("Wallet API:", error.message);
+  }
+}
+
+async function loadPaymentMethods() {
+  if (!state.token) return;
+
+  try {
+    const data = await api(API.paymentMethods);
+    const methods = Array.isArray(data) ? data : (data.methods || []);
+    state.methods = methods;
+  } catch (error) {
+    console.warn("Payment methods API:", error.message);
+  }
+}
+
+async function loadSettings() {
+  if (!state.token) return;
+
+  try {
+    const data = await api(API.settings);
+    state.settings = { ...state.settings, ...(data.settings || data || {}) };
+  } catch (error) {
+    console.warn("Settings API:", error.message);
+  }
+}
+
+async function loadAccount() {
+  if (!state.token || !state.user) return;
+
+  state.name = state.user.name || state.user.email || "Customer";
+
+  try {
+    const data = await api(API.account);
+    const account = data.account || data;
+    if (account && account.name) state.name = account.name;
+  } catch (error) {
+    console.warn("Account API:", error.message);
+  }
+
+  await Promise.all([
+    loadOrders(),
+    loadWallet(),
+    loadPaymentMethods(),
+    loadSettings()
+  ]);
+}
+
+/* ========================= NAV ========================= */
+
+function showPanel(id) {
+  document.querySelectorAll(".panel").forEach((s) => s.classList.remove("active"));
+  const panel = document.getElementById(id);
+  if (panel) panel.classList.add("active");
+
+  document.querySelectorAll(".sn-item").forEach((n) => n.classList.remove("active"));
+  const navMatch = document.querySelector('.sn-item[data-panel="' + id + '"]');
+  if (navMatch) navMatch.classList.add("active");
+
+  window.scrollTo({ top: 0, behavior: "smooth" });
+  render();
+}
+
+function openOrders(tab) {
+  currentOrderTab = tab;
+  showPanel("panel-orders");
+}
+
+/* ========================= TOAST ========================= */
+
+function toast(msg) {
+  const t = document.getElementById("toast");
+  if (!t) return;
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove("show"), 2400);
+}
+
+/* ========================= RENDER ========================= */
+
+function render() {
+  const displayName = state.name || state.user?.name || state.user?.email || "Customer";
+  const initial = displayName.trim().charAt(0).toUpperCase() || "C";
+
+  const ids = {
+    "side-name": displayName,
+    "topbar-name": displayName,
+    "side-initial": initial,
+    "topbar-initial": initial,
+    "name-input": displayName,
+    "stat-wishlist": state.wishlist,
+    "stat-stores": state.stores,
+    "stat-vouchers": state.vouchers,
+    "mini-balance": state.wallet.balance,
+    "mini-methods": state.methods.length,
+    "wallet-balance-big": state.wallet.balance,
+    "stat-deposits": money(state.wallet.deposits),
+    "stat-refunds": money(state.wallet.refunds),
+    "stat-rewards": money(state.wallet.rewards)
+  };
+
+  Object.entries(ids).forEach(([id, value]) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (el.tagName === "INPUT") el.value = value;
+    else el.textContent = value;
+  });
+
+  const c = counts();
+
+  ["to_pay", "to_ship", "to_receive", "to_review", "returns"].forEach((k) => {
+    const el = document.getElementById("badge-" + k);
+    if (!el) return;
+    el.textContent = c[k] > 0 ? c[k] : "";
+    el.style.display = c[k] > 0 ? "flex" : "none";
+  });
+
+  const totalPending = c.to_pay + c.to_ship + c.to_receive + c.to_review;
+  const navCnt = document.getElementById("nav-cnt-orders");
+  if (navCnt) {
+    navCnt.textContent = totalPending > 0 ? totalPending : "";
+    navCnt.style.display = totalPending > 0 ? "inline-block" : "none";
+  }
+
+  renderOrders();
+  renderWallet();
+  renderPayment();
+  renderTransactionTable();
+}
+
+function renderOrders() {
+  const tabs = [
+    ["all", "All"],
+    ["to_pay", "To Pay"],
+    ["to_ship", "To Ship"],
+    ["to_receive", "To Receive"],
+    ["to_review", "To Review"],
+    ["returns", "Returns & Cancellations"]
+  ];
+
+  const c = counts();
+  const tabsEl = document.getElementById("order-tabs");
+  if (!tabsEl) return;
+
+  tabsEl.innerHTML = tabs.map(([key, label]) => {
+    const badgeCount = key === "returns" ? c.returns : (c[key] || 0);
+    return `<div class="order-tab ${currentOrderTab === key ? "active" : ""}"
+      onclick="currentOrderTab='${key}';renderOrders()">
+      ${label}${badgeCount > 0 ? `<span class="b">${badgeCount}</span>` : ""}
+    </div>`;
+  }).join("");
+
+  const list = state.orders.filter((o) => {
+    if (currentOrderTab === "all") return true;
+    if (currentOrderTab === "returns") return o.status === "cancelled" || o.status === "returned";
+    return o.status === currentOrderTab;
+  });
+
+  const listEl = document.getElementById("order-list");
+  if (!listEl) return;
+
+  if (!state.token) {
+    listEl.innerHTML = `<div class="empty-state">
+      <i class="fa-solid fa-lock"></i>
+      Please log in to view your orders.
+    </div>`;
+    return;
+  }
+
+  if (list.length === 0) {
+    listEl.innerHTML = `<div class="empty-state">
+      <i class="fa-solid fa-box-open"></i>No orders here yet.
+    </div>`;
+    return;
+  }
+
+  listEl.innerHTML = list.map((o) => `
+    <div class="order-row">
+      <div class="thumb"><i class="fa-solid fa-box"></i></div>
+      <div class="info">
+        <div class="top-line">
+          <span class="seller">${escapeHtml(o.seller)}</span>
+          <span class="oid">· Order #${escapeHtml(o.id)}</span>
+        </div>
+        <div class="name">${escapeHtml(o.item)}</div>
+        <div class="sub">
+          Qty: ${o.qty}
+          ${o.tracking ? ` &nbsp;·&nbsp; Tracking: ${escapeHtml(o.tracking)}` : ""}
+          ${o.paymentMethod ? ` &nbsp;·&nbsp; ${escapeHtml(o.paymentMethod)}` : ""}
+        </div>
+      </div>
+      <div class="price">${money(o.total)}</div>
+      <div class="status-col">
+        <span class="status-pill status-${escapeHtml(o.status)}">${statusLabel(o.status)}</span>
+      </div>
+      <div class="order-actions">${orderActions(o)}</div>
+    </div>
+  `).join("");
+}
+
+function orderActions(o) {
+  // Only actions backed by real order data are shown.
+  if (o.status === "to_receive" || o.status === "to_ship") {
+    return `<button class="btn btn-outline" onclick="openTrack('${escapeHtml(String(o.id))}')">Track</button>`;
+  }
+
+  if (o.status === "to_review") {
+    return `<button class="btn btn-outline" onclick="toast('Review backend is not connected yet.')">Rate &amp; Review</button>`;
+  }
+
+  if (o.status === "completed") {
+    return `<span style="font-size:12px;color:var(--muted);">Order completed</span>`;
+  }
+
+  if (o.status === "cancelled") {
+    return `<span style="font-size:12px;color:var(--muted);">Order cancelled</span>`;
+  }
+
+  if (o.status === "to_pay") {
+    return `<span style="font-size:12px;color:var(--muted);">Payment status: ${escapeHtml(o.rawStatus || "pending")}</span>`;
+  }
+
+  return "";
+}
+
+function renderWallet() {
+  const balance = document.getElementById("wallet-balance-big");
+  if (balance) balance.textContent = Number(state.wallet.balance || 0).toLocaleString("en-PK");
+}
+
+function renderTransactionTable() {
+  const txEl = document.getElementById("tx-list");
+  if (!txEl) return;
+
+  if (!state.transactions.length) {
+    txEl.innerHTML = `<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:30px;">
+      No wallet transactions available.
+    </td></tr>`;
+    return;
+  }
+
+  txEl.innerHTML = state.transactions.slice(0, 20).map((t) => {
+    const amount = Number(t.amount || 0);
+    const success = String(t.status || "").toLowerCase() === "success" ||
+      String(t.status || "").toLowerCase() === "completed";
+
+    return `<tr>
+      <td><div class="tx-ic"><i class="fa-solid fa-wallet"></i></div></td>
+      <td>${escapeHtml(t.title || t.description || t.type || "Transaction")}</td>
+      <td style="color:var(--muted);">${escapeHtml(nowStr(t.date || t.created_at || t.createdAt))}</td>
+      <td class="${amount < 0 ? "amt-neg" : "amt-pos"}">
+        ${amount < 0 ? "- " : "+ "}${money(Math.abs(amount)).replace("Rs. ", "Rs.")}
+      </td>
+      <td><span class="s-tag ${success ? "s-success" : "s-failed"}">
+        ${success ? "Success" : escapeHtml(t.status || "Pending")}
+      </span></td>
+    </tr>`;
+  }).join("");
+}
+
+function renderPayment() {
+  const wallets = state.methods.filter((m) => String(m.kind || m.type || "").toLowerCase() === "wallet");
+  const banks = state.methods.filter((m) => String(m.kind || m.type || "").toLowerCase() === "bank");
+
+  const walletEl = document.getElementById("pm-wallet");
+  const bankEl = document.getElementById("pm-bank");
+
+  if (!walletEl || !bankEl) return;
+
+  walletEl.innerHTML = wallets.length
+    ? wallets.map(pmCard).join("")
+    : `<div class="empty-state" style="padding:30px;">No digital wallet is linked.</div>`;
+
+  bankEl.innerHTML = banks.length
+    ? banks.map(pmCard).join("")
+    : `<div class="empty-state" style="padding:30px;">No bank account is linked.</div>`;
+}
+
+function pmCard(m) {
+  const id = m.id ?? m.payment_method_id ?? "";
+  const brand = m.brand || m.provider || m.name || "Payment account";
+  const number = m.number || m.account_number_masked || m.accountNumber || "Linked account";
+
+  return `<div class="pm-card">
+    <div class="pm-top">
+      <div class="ic"><i class="fa-solid fa-credit-card"></i></div>
+      <div class="brand">${escapeHtml(brand)}</div>
+    </div>
+    <div class="num">${escapeHtml(number)}</div>
+    ${id !== "" ? `<span class="pm-remove" onclick="removeMethod('${escapeHtml(String(id))}')">
+      <i class="fa-solid fa-xmark"></i>
+    </span>` : ""}
+  </div>`;
+}
+
+/* ========================= REAL ACTIONS ========================= */
+
+function openTrack(id) {
+  const o = state.orders.find((x) => String(x.id) === String(id));
+  if (!o) return;
+
+  document.getElementById("track-title").textContent = "Order " + o.id;
+
+  const steps = [
+    ["Order Confirmed", o.status !== "cancelled"],
+    ["Preparing for Shipment", ["to_ship", "to_receive", "completed"].includes(o.status)],
+    ["Shipped", ["to_receive", "completed"].includes(o.status)],
+    ["Delivered", o.status === "completed"]
+  ];
+
+  document.getElementById("track-timeline").innerHTML = steps.map(([title, done]) => `
+    <div class="tl-step ${done ? "done" : ""}">
+      <div class="dot"></div>
+      <div class="tl-txt">
+        <div class="t1">${title}</div>
+        <div class="t2">${done ? "Recorded by the order system" : "Not reached yet"}</div>
+      </div>
+    </div>
+  `).join("");
+
+  const btn = document.getElementById("track-action-btn");
+  btn.textContent = "Close";
+  btn.onclick = () => closeOverlay("overlay-track");
+
+  openOverlay("overlay-track");
+}
+
+async function updateProfile() {
+  const input = document.getElementById("name-input");
+  const name = input ? input.value.trim() : "";
+
+  if (!name) {
+    toast("Enter your name.");
+    return;
+  }
+
+  try {
+    await api(API.account, { method: "PUT", body: { name } });
+    state.name = name;
+    if (state.user) {
+      state.user.name = name;
+      localStorage.setItem("mandi_user", JSON.stringify(state.user));
+    }
+    toast("Profile updated.");
+    render();
+  } catch (error) {
+    toast(error.message || "Profile update is not available.");
+  }
+}
+
+function updateName(value) {
+  state.name = value;
+}
+
+async function saveSetting(key, value) {
+  state.settings[key] = value;
+
+  try {
+    await api(API.settings, {
+      method: "PUT",
+      body: { [key]: value }
+    });
+  } catch (error) {
+    // Do not pretend a local toggle was saved remotely.
+    toast("Settings API is not connected yet.");
+  }
+}
+
+function toggleSetting(el, key) {
+  const next = !el.classList.contains("on");
+  el.classList.toggle("on", next);
+  saveSetting(key, next);
+}
+
+function removeMethod(id) {
+  toast("Payment-method removal needs the backend payment-method endpoint.");
+}
+
+
+/* ========================= OVERLAY HELPERS ========================= */
+
+function openOverlay(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.add("active");
+}
+
+function closeOverlay(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.remove("active");
+}
+
+document.querySelectorAll(".overlay").forEach((ov) => {
+  ov.addEventListener("click", (e) => {
+    if (e.target === ov) ov.classList.remove("active");
+  });
+});
+
+/* ========================= SAFE UI PATCHES ========================= */
+
+// Connect top-bar actions to real storefront/account navigation.
+document.querySelectorAll(".ta-item").forEach((el) => {
+  const text = el.textContent.toLowerCase();
+  el.onclick = () => {
+    if (text.includes("cart")) window.location.href = "/";
+    else if (text.includes("heart")) toast("Wishlist is managed from the storefront.");
+    else toast("No unread notifications.");
+  };
+});
+
+
+// Make profile save explicit.
+const profileCard = document.querySelector("#panel-settings .card");
+if (profileCard && !document.getElementById("save-profile-btn")) {
+  const btn = document.createElement("button");
+  btn.id = "save-profile-btn";
+  btn.className = "btn btn-primary";
+  btn.textContent = "Save Profile";
+  btn.onclick = updateProfile;
+  profileCard.appendChild(btn);
+}
+
+// Remove fake wallet deposit flow from the UI.
+const depositButtons = document.querySelectorAll('[onclick*="openDeposit"]');
+depositButtons.forEach((el) => {
+  el.onclick = () => toast("Wallet deposits are handled by the Mandi backend.");
+});
+
+const switches = document.querySelectorAll("#panel-settings .switch");
+if (switches[0]) switches[0].onclick = () => toggleSetting(switches[0], "notifications");
+if (switches[1]) switches[1].onclick = () => toggleSetting(switches[1], "emailAlerts");
+if (switches[2]) switches[2].onclick = () => toggleSetting(switches[2], "twoFactor");
+
+/* ========================= INIT ========================= */
+
+(async function init() {
+  if (!state.token || !state.user) {
+    state.name = "Customer";
+    render();
+    toast("Please log in from the Mandi storefront first.");
+    return;
+  }
+
+  state.name = state.user.name || state.user.email || "Customer";
+  render();
+
+  await loadAccount();
+  render();
+})();
+</script>
+</body>
+</html>

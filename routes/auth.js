@@ -44,5 +44,28 @@ router.post("/login", (req, res) => {
   const token = jwt.sign(user, SECRET, { expiresIn: "7d" });
   res.json({ token, user });
 });
+router.get("/me", (req, res) => {
+  try {
+    const header = req.headers.authorization || "";
 
+    if (!header.startsWith("Bearer ")) {
+      return res.status(401).json({ error: "Not logged in." });
+    }
+
+    const token = header.slice(7);
+    const payload = jwt.verify(token, SECRET);
+
+    const user = db
+      .prepare("SELECT id, name, email FROM users WHERE id = ?")
+      .get(payload.id);
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found." });
+    }
+
+    res.json({ user });
+  } catch (error) {
+    res.status(401).json({ error: "Invalid or expired login." });
+  }
+});
 module.exports = router;

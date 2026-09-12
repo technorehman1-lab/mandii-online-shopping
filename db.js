@@ -60,7 +60,28 @@ function initDb() {
       qty INTEGER NOT NULL,
       FOREIGN KEY (order_id) REFERENCES orders(id)
     );
-  `);
+ CREATE TABLE IF NOT EXISTS payment_methods (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL,
+  type TEXT NOT NULL,
+  provider TEXT NOT NULL,
+  account_number TEXT NOT NULL,
+  account_name TEXT,
+  created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+CREATE TABLE IF NOT EXISTS wallet_transactions (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL,
+  type TEXT NOT NULL,
+  amount REAL NOT NULL,
+  status TEXT NOT NULL DEFAULT 'pending',
+  reference TEXT,
+  created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);
+    `);
 
   seedIfEmpty();
 }
