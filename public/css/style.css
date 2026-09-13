@@ -32,7 +32,11 @@ a { color: inherit; }
 button { font-family: inherit; cursor: pointer; }
 
 .wrap { max-width: 1120px; margin: 0 auto; padding: 0 16px; }
-
+.logo img {
+  width: 120px;
+  height: auto;
+  display: block;
+}
 /* Header */
 header.site {
   position: sticky; top: 0; z-index: 30;
